@@ -8,29 +8,30 @@ def main(page: ft.Page):
     page.bgcolor = "#ffd6e7"
 
     def show_moods(e):
-        page.clean()
+        page.controls.clear()
 
         Bad = ft.Image(
-            src = "Bad.PNG",
+            src = "images/Bad.PNG",
             width = 120,
             height = 120,
-            on_click = lambda e: print("bad selected")
+            #on_click = lambda e: print("bad selected")
         )
 
         Notgood = ft.Image(
-            src = "Notgood.PNG",
+            src = "images/Notgood.PNG",
             width = 120,
             height = 120,
-            on_click = lambda e: print("Not good selected")
+            #on_click = lambda e: print("Not good selected")
         )
 
         page.add(
             ft.Column(
-                [ft.Text("Select your mood", size = 30), ft.Row([Bad, Notgood])],
+                [ft.Text("Select your mood", size = 30), ft.Row(controls=[Bad, Notgood])],
                 horizontal_alignment="center"
             )
         )
-    
+        page.update()
+
     title = ft.Text(
             "Mood Tracker",
             size = 40,
@@ -68,4 +69,4 @@ def main(page: ft.Page):
         )
     )
 
-ft.app(target = main)
+ft.app(target = main, assets_dir="assets")
