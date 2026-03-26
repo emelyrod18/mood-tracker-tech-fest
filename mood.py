@@ -23,10 +23,31 @@ def main(page: ft.Page):
             height = 120,
             #on_click = lambda e: print("Not good selected")
         )
+        
+        neutral = ft.Image(
+            src = "images/neutral.PNG",
+            width = 120,
+            height = 120,
+            #on_click = lambda e: print("Not good selected")
+        )
+
+        Good = ft.Image(
+            src = "images/Good.PNG",
+            width = 120,
+            height = 120,
+            #on_click = lambda e: print("Not good selected")
+        )
+
+        Great = ft.Image(
+            src = "images/Great.PNG",
+            width = 120,
+            height = 120,
+            #on_click = lambda e: print("Not good selected")
+        )
 
         page.add(
             ft.Column(
-                [ft.Text("Select your mood", size = 30), ft.Row(controls=[Bad, Notgood])],
+                [ft.Text("Select your mood", size = 30), ft.Row(controls=[Bad, Notgood, neutral, Good, Great])],
                 horizontal_alignment="center"
             )
         )
