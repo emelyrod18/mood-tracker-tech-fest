@@ -90,5 +90,11 @@ def main(page: ft.Page):
             expand =  True
         )
     )
+#-------------------------------------------------------
+
+def create_emoji(emoji, label):
+    return ft.Column(controls=[ft.IconButton(content=ft.Text(emoji, size=40), 
+    on_click=lambda _: log(label)), ft.Text(label, size = 12, color = "#ff4f87")],
+    horizontal_alignment = ft.CrossAxisAlignment.CENTER)
 
 ft.app(target = main, assets_dir="assets")
