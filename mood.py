@@ -12,42 +12,43 @@ def main(page: ft.Page):
 
         Bad = ft.Image(
             src = "images/Bad.PNG",
-            width = 120,
-            height = 120,
+            width = 150,
+            height = 150,
             #on_click = lambda e: print("bad selected")
         )
 
         Notgood = ft.Image(
             src = "images/Notgood.PNG",
-            width = 120,
-            height = 120,
+            width = 150,
+            height = 150,
             #on_click = lambda e: print("Not good selected")
         )
         
         neutral = ft.Image(
             src = "images/neutral.PNG",
-            width = 120,
-            height = 120,
+            width = 150,
+            height = 150,
             #on_click = lambda e: print("Not good selected")
         )
 
         Good = ft.Image(
             src = "images/Good.PNG",
-            width = 120,
-            height = 120,
+            width = 150,
+            height = 150,
             #on_click = lambda e: print("Not good selected")
         )
 
         Great = ft.Image(
             src = "images/Great.PNG",
-            width = 120,
-            height = 120,
+            width = 150,
+            height = 150,
             #on_click = lambda e: print("Not good selected")
         )
 
         page.add(
             ft.Column(
-                [ft.Text("Select your mood", size = 30), ft.Row(controls=[Bad, Notgood, neutral, Good, Great])],
+                [ft.Text("Select your mood", size = 30, color="#ff4f87", weight = "bold"), 
+                 ft.Row(controls=[Bad, Notgood, neutral, Good, Great])],
                 horizontal_alignment="center"
             )
         )
