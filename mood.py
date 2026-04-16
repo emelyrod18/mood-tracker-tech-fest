@@ -23,34 +23,34 @@ def main(page: ft.Page):
             src = "images/Bad.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey(page, emotions_bad, "Bad"))
+            on_click = lambda e: survey(page, emotions_bad, "Bad", show_moods))
 
         Notgood = ft.Container(content=ft.Image(
             src = "images/Notgood.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey(page, emotions_Notgood, "Not Good")
+            on_click = lambda e: survey(page, emotions_Notgood, "Not Good", show_moods)
         )
         
         neutral = ft.Container(content=ft.Image(
             src = "images/neutral.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey(page, emotions_neutral, "Neutral")
+            on_click = lambda e: survey(page, emotions_neutral, "Neutral", show_moods)
         )
 
         Good = ft.Container(content=ft.Image(
             src = "images/Good.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey(page, emotions_Good, "Good")
+            on_click = lambda e: survey(page, emotions_Good, "Good", show_moods)
         )
 
         Great = ft.Container(content=ft.Image(
             src = "images/Great.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey(page, emotions_Great, "Great")
+            on_click = lambda e: survey(page, emotions_Great, "Great", show_moods)
         )
 
         page.add(
@@ -100,8 +100,11 @@ def main(page: ft.Page):
     )
 #-------------------------------------------------------
 
-def survey(page, emotion_list, label):
+def survey(page, emotion_list, label, go_back):
     page.controls.clear()
+
+    back_button = ft.TextButton("Back", on_click=lambda e: go_back(e))
+    page.add(back_button)
 
     def log(mood):
         page.snack_bar = ft.SnackBar(ft.Text(f"Saved {mood}!"))
@@ -113,15 +116,18 @@ def survey(page, emotion_list, label):
     rows = []
     for emoji, name in emotion_list:
         rows.append(ft.Column([ft.IconButton(content=ft.Text(emoji, size=40),
-                                on_click=lambda e, name=name: show_reasons(page, name)),
+                                on_click=lambda e, name=name: show_reasons(page, name, lambda e: survey(page, emotion_list, label, go_back))),
                                 ft.Text(name, size=12, color="#ff4f87")], 
                                 horizontal_alignment="center"))
         
     page.add(ft.Row(controls=rows, alignment="center"))
     page.update()
 
-def show_reasons(page, selected_emotion):
+def show_reasons(page, selected_emotion, go_back):
     page.controls.clear()
+
+    back_button= ft.TextButton("Back", on_click=lambda e: go_back(e))
+    page.add(back_button)
 
     page.add(ft.Text("why do you feel this way?", size=20, color= "#ff4f87", weight="bold" ))
 
