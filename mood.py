@@ -1,5 +1,7 @@
 import flet as ft
 
+emotions_bad = [("😢", "Sad"), ("😠", "Angry"), ("😰", "Stressed")]
+
 def main(page: ft.Page):
     page.title = "Mood Tracker"
     page.window_width = 400
@@ -10,39 +12,38 @@ def main(page: ft.Page):
     def show_moods(e):
         page.controls.clear()
 
-        Bad = ft.Image(
+        Bad = ft.Container(content=ft.Image(
             src = "images/Bad.PNG",
             width = 150,
-            height = 150,
-            #on_click = lambda e: survey(e, "Bad")
-        )
+            height = 150),
+            on_click = lambda e: survey(page, emotions_bad, "Bad"))
 
-        Notgood = ft.Image(
+        Notgood = ft.Container(content=ft.Image(
             src = "images/Notgood.PNG",
             width = 150,
-            height = 150,
-            #on_click = lambda e: survey(e, "Not Good")
+            height = 150),
+            on_click = lambda e: survey("Not Good")
         )
         
-        neutral = ft.Image(
+        neutral = ft.Container(content=ft.Image(
             src = "images/neutral.PNG",
             width = 150,
-            height = 150,
-            #on_click = lambda e: survey(e, "Neutral")
+            height = 150),
+            on_click = lambda e: survey("Neutral")
         )
 
-        Good = ft.Image(
+        Good = ft.Container(content=ft.Image(
             src = "images/Good.PNG",
             width = 150,
-            height = 150,
-            #on_click = lambda e: survey(e, "Good")
+            height = 150),
+            on_click = lambda e: survey("Good")
         )
 
-        Great = ft.Image(
+        Great = ft.Container(content=ft.Image(
             src = "images/Great.PNG",
             width = 150,
-            height = 150,
-            #on_click = lambda e: survey(e, "Great")
+            height = 150),
+            on_click = lambda e: survey("Great")
         )
 
         page.add(
@@ -92,22 +93,24 @@ def main(page: ft.Page):
     )
 #-------------------------------------------------------
 
-def create_emoji(emoji, label):
-    return ft.Column(controls=[ft.IconButton(content=ft.Text(emoji, size=40), 
-    on_click=lambda _: log(label)), ft.Text(label, size = 12, color = "#ff4f87")],
-    horizontal_alignment = ft.CrossAxisAlignment.CENTER)
-
-def survey(page):
+def survey(page, emotion_list, label):
     page.controls.clear()
 
     def log(mood):
-        page.add(ft.SnackBar(ft.Text(f"Saved {mood}!")))
+        page.snack_bar = ft.SnackBar(ft.Text(f"Saved {mood}!"))
+        page.snack_bar.open = True
         page.update()
 
-    emotions = [("😊", "Happy"), ("😐", "Okay"), ("🧘", "Calm"), ("🙏", "Grateful"),
-        ("😌", "Content"), ("😢", "Sad"), ("😌", "Relaxed"), ("😟", "Worried"),
-        ("😠", "Angry"), ("😰", "Stressed"), ("😴", "Tired")]
+    page.add(ft.Text("What is your specific feeling?", size=20, color="#ff4f87", weight="bold", ))
 
+    rows = []
+    for emoji, name in emotion_list:
+        rows.append(ft.Column([ft.IconButton(content=ft.Text(emoji, size=40),
+                                on_click=lambda _, name: log(name)),
+                                ft.Text(name, size=12, color="#ff4f87")], 
+                                horizontal_alignment="center"))
+        
+    page.add(ft.Row(controls=rows, alignment="center"))
     page.update()
 
 ft.app(target = main, assets_dir="assets")
