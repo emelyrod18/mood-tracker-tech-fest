@@ -1,6 +1,13 @@
 import flet as ft
 
-emotions_bad = [("😢", "Sad"), ("😠", "Angry"), ("😰", "Stressed")]
+emotions_bad = [("😢", "Sad"), ("😠", "Angry"), ("😰", "Stressed"),  ("😞", "Overwhelmed"), ("🥱", "Tired") ]
+emotions_Notgood = [("😴", "Unmotivated"), ("😔", "Insecure"), ("😒", "Annoyed"),  ("😅", "Disappointed"), ("🙃", "Bored") ]
+emotions_neutral = [("🙂", "Okay"), ("😌", "Calm"), ("🤔", "Thoughtful"),  ("😀", "Fine"), ("😐", "Unbothered") ]
+emotions_Good = [("😁", "Happy"), ("🫡", "Motivated"), ("☺️", "Proud"),  ("🫨", "Energized"), ("😇", "Peaceful") ]
+emotions_Great = [("🤩", "Excited"), ("🥳", "Joyful"), ("🥰", "Loved"),  ("😜", "Passionate"), ("☺️", "Inspired") ]
+
+reasons = [("💼", "Work"), ("👯", "Friends"), ("👨‍👩‍👧", "Family"), ("📚", "School"), ("💭", "Personal")]
+
 
 def main(page: ft.Page):
     page.title = "Mood Tracker"
@@ -22,28 +29,28 @@ def main(page: ft.Page):
             src = "images/Notgood.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey("Not Good")
+            on_click = lambda e: survey(page, emotions_Notgood, "Not Good")
         )
         
         neutral = ft.Container(content=ft.Image(
             src = "images/neutral.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey("Neutral")
+            on_click = lambda e: survey(page, emotions_neutral, "Neutral")
         )
 
         Good = ft.Container(content=ft.Image(
             src = "images/Good.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey("Good")
+            on_click = lambda e: survey(page, emotions_Good, "Good")
         )
 
         Great = ft.Container(content=ft.Image(
             src = "images/Great.PNG",
             width = 150,
             height = 150),
-            on_click = lambda e: survey("Great")
+            on_click = lambda e: survey(page, emotions_Great, "Great")
         )
 
         page.add(
@@ -106,11 +113,31 @@ def survey(page, emotion_list, label):
     rows = []
     for emoji, name in emotion_list:
         rows.append(ft.Column([ft.IconButton(content=ft.Text(emoji, size=40),
-                                on_click=lambda _, name: log(name)),
+                                on_click=lambda e, name=name: show_reasons(page, name)),
                                 ft.Text(name, size=12, color="#ff4f87")], 
                                 horizontal_alignment="center"))
         
     page.add(ft.Row(controls=rows, alignment="center"))
     page.update()
+
+def show_reasons(page, selected_emotion):
+    page.controls.clear()
+
+    page.add(ft.Text("why do you feel this way?", size=20, color= "#ff4f87", weight="bold" ))
+
+    rows = []
+    for emoji, reason in reasons:
+        rows.append(
+            ft.Column([
+                ft.IconButton(
+                    content=ft.Text(emoji, size=40),
+                    on_click= None
+                ),
+                ft.Text(reason,size=12, color="#ff4f87")
+            ], horizontal_alignment="center")
+        )
+    page.add(ft.Row(controls=rows, alignment="center"))
+    page.update()
+
 
 ft.app(target = main, assets_dir="assets")
