@@ -1,4 +1,5 @@
 import flet as ft
+import sqlite3
 
 emotions_bad = [("😢", "Sad"), ("😠", "Angry"), ("😰", "Stressed"),  ("😞", "Overwhelmed"), ("🥱", "Tired") ]
 emotions_Notgood = [("😴", "Unmotivated"), ("😔", "Insecure"), ("😒", "Annoyed"),  ("😅", "Disappointed"), ("🙃", "Bored") ]
@@ -98,12 +99,13 @@ def main(page: ft.Page):
             expand =  True
         )
     )
-#-------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 def survey(page, emotion_list, label, go_back):
     page.controls.clear()
 
-    back_button = ft.TextButton("Back", on_click=lambda e: go_back(e))
+    back_button = ft.TextButton("Back", style=ft.ButtonStyle(color="#ff4f87"), 
+                                on_click=lambda e: go_back(e))
     page.add(back_button)
 
     def log(mood):
@@ -116,7 +118,8 @@ def survey(page, emotion_list, label, go_back):
     rows = []
     for emoji, name in emotion_list:
         rows.append(ft.Column([ft.IconButton(content=ft.Text(emoji, size=40),
-                                on_click=lambda e, name=name: show_reasons(page, name, lambda e: survey(page, emotion_list, label, go_back))),
+                                on_click=lambda e, name=name: show_reasons(page, name, 
+                                lambda e: survey(page, emotion_list, label, go_back))),
                                 ft.Text(name, size=12, color="#ff4f87")], 
                                 horizontal_alignment="center"))
         
@@ -126,10 +129,11 @@ def survey(page, emotion_list, label, go_back):
 def show_reasons(page, selected_emotion, go_back):
     page.controls.clear()
 
-    back_button= ft.TextButton("Back", on_click=lambda e: go_back(e))
+    back_button= ft.TextButton("Back", style=ft.ButtonStyle(color="#ff4f87"), 
+                                on_click=lambda e: go_back(e))
     page.add(back_button)
 
-    page.add(ft.Text("why do you feel this way?", size=20, color= "#ff4f87", weight="bold" ))
+    page.add(ft.Text("Why do you feel this way?", size=20, color= "#ff4f87", weight="bold" ))
 
     rows = []
     for emoji, reason in reasons:
@@ -145,5 +149,20 @@ def show_reasons(page, selected_emotion, go_back):
     page.add(ft.Row(controls=rows, alignment="center"))
     page.update()
 
+#-------------------------------------------------------------------------------
+#sql stuff
+
+def database():
+    conn = sqlite3.connect("moods.database")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS moods(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            emotion TEXT,
+            reason TEXT,
+            date DATETIME DEFAULT CURRENT_TIMESTAMP)
+            """)
+    conn.commit()
+    conn.close()
 
 ft.app(target = main, assets_dir="assets")
