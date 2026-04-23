@@ -165,4 +165,11 @@ def database():
     conn.commit()
     conn.close()
 
+def save_mood(emotion, reason):
+    conn = sqlite3.connect("moods.database")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO moods (emotion, reason) VALUES (?, ?)", (emotion, reason))
+    conn.commit()
+    conn.close()
+
 ft.app(target = main, assets_dir="assets")
