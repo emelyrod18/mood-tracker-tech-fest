@@ -10,6 +10,18 @@ emotions_Great = [("🤩", "Excited"), ("🥳", "Joyful"), ("🥰", "Loved"),  (
 
 reasons = [("💼", "Work"), ("👯", "Friends"), ("👨‍👩‍👧", "Family"), ("📚", "School"), ("💭", "Personal")]
 
+def database():
+    conn = sqlite3.connect("moods.database")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS moods(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            emotion TEXT,
+            reason TEXT,
+            date DATETIME DEFAULT CURRENT_TIMESTAMP)
+            """)
+    conn.commit()
+    conn.close()
 
 def main(page: ft.Page):
     page.title = "Mood Tracker"
@@ -17,6 +29,8 @@ def main(page: ft.Page):
     page.window_height = 700
 
     page.bgcolor = "#ffd6e7"
+    database()
+
 
     def show_moods(e):
         page.controls.clear()
@@ -150,21 +164,8 @@ def show_reasons(page, selected_emotion, go_back):
     page.add(ft.Row(controls=rows, alignment="center"))
     page.update()
 
-#-------------------------------------------------------------------------------
-#sql stuff
 
-def database():
-    conn = sqlite3.connect("moods.database")
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS moods(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            emotion TEXT,
-            reason TEXT,
-            date DATETIME DEFAULT CURRENT_TIMESTAMP)
-            """)
-    conn.commit()
-    conn.close()
+
 
 def save_mood(emotion, reason):
     conn = sqlite3.connect("moods.database")
