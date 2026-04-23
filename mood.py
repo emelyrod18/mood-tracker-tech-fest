@@ -9,6 +9,44 @@ emotions_Great = [("🤩", "Excited"), ("🥳", "Joyful"), ("🥰", "Loved"),  (
 
 reasons = [("💼", "Work"), ("👯", "Friends"), ("👨‍👩‍👧", "Family"), ("📚", "School"), ("💭", "Personal")]
 
+def database():
+    conn = sqlite3.connect("moods.database")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS moods(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            emotion TEXT,
+            reason TEXT,
+            date DATETIME DEFAULT CURRENT_TIMESTAMP)
+            """)
+    conn.commit()
+    conn.close()
+
+def save_mood(emotio,reason):
+    conn = sqlite3.connect("moods.database")
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO moods (emtion, reason) VALUES (?, ?)",
+        (emotion, reason)
+    )
+    conn.commit
+    conn.close()
+
+def history():
+    conn = sqlite3.connect("moods.database")
+    cursor = conn.cursor()
+    cursor.execute("SELECT emotion, reason, date FROM moods ORDER BY date DESC")
+    rows = cursor.fetchall()
+    conn.close()
+
+    items = []
+    for emotion, reason, date in rows:
+        items.append(ft.Text(f"{date} --> {emotion} ({reason})", size =  14))
+
+    return ft.Column(
+        [ft.Text("Mood History", size = 25, weight="bold", color = "ff4f87")] + items,
+        scroll = "auto"
+    )
 
 def main(page: ft.Page):
     page.title = "Mood Tracker"
@@ -16,6 +54,33 @@ def main(page: ft.Page):
     page.window_height = 700
 
     page.bgcolor = "#ffd6e7"
+    database()
+
+    history_tab = ft.Container(content = history())
+
+    def noti(emotion, reason):
+        dialog = ft.AlertDialog(
+            modal = True,
+            title = ft.Text("Saved sucessfully 🎉")
+            content = ft.Text(f"You felt {emotion} because of {reason}."),
+            actions = [
+                ft.TextButton(
+                    "OK", on_click= lambda e: close_dialog(dialog)
+                )
+            ], 
+            actions_alignment = "end"
+        )
+        page.overlay.append(dialog)
+        dialog.open = True
+        page.update()
+    def close_dialog(dialog):
+        dialog.open = False
+        page.update()
+
+    def save_notify(emotion, reason):
+        save_mood(emotion, reason)
+        history_tab.content = history()
+        noti(emotion, reason)
 
     def show_moods(e):
         page.controls.clear()
@@ -152,17 +217,5 @@ def show_reasons(page, selected_emotion, go_back):
 #-------------------------------------------------------------------------------
 #sql stuff
 
-def database():
-    conn = sqlite3.connect("moods.database")
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS moods(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            emotion TEXT,
-            reason TEXT,
-            date DATETIME DEFAULT CURRENT_TIMESTAMP)
-            """)
-    conn.commit()
-    conn.close()
 
 ft.app(target = main, assets_dir="assets")
