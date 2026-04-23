@@ -1,5 +1,6 @@
 import flet as ft
 import sqlite3
+import requests
 
 emotions_bad = [("😢", "Sad"), ("😠", "Angry"), ("😰", "Stressed"),  ("😞", "Overwhelmed"), ("🥱", "Tired") ]
 emotions_Notgood = [("😴", "Unmotivated"), ("😔", "Insecure"), ("😒", "Annoyed"),  ("😅", "Disappointed"), ("🙃", "Bored") ]
@@ -171,5 +172,17 @@ def save_mood(emotion, reason):
     cursor.execute("INSERT INTO moods (emotion, reason) VALUES (?, ?)", (emotion, reason))
     conn.commit()
     conn.close()
+
+#-------------------------------------------------------------------------------
+#API
+
+def get_recommendation(emotion, reason):
+    response = requests.get(
+        "https://reccobeats.com/api/recommend", 
+        params={"mood": emotion, "reason": reason})
+  
+    data = response.json() 
+    
+    return data.get("title"), data.get("artist")
 
 ft.app(target = main, assets_dir="assets")
