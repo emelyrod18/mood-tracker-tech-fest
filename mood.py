@@ -19,8 +19,13 @@ def database():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             emotion TEXT,
             reason TEXT,
+            note TEXT,
             date DATETIME DEFAULT CURRENT_TIMESTAMP)
             """)
+    try:
+        cursor.execute("ALTER TABLE moods ADD COLUMN note TEXT")
+    except:
+        pass
     conn.commit()
     conn.close()
 
@@ -41,7 +46,7 @@ def get_song(mood):
 def get_history_controls():
     conn = sqlite3.connect("moods.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT emotion, reason, date FROM moods ORDER BY date DESC")
+    cursor.execute("SELECT emotion, reason, note, date FROM moods ORDER BY date DESC")
     history = cursor.fetchall()
     conn.close()
 
@@ -52,7 +57,7 @@ def get_history_controls():
             ft.Text("No moods saved yet.", size=16, color="#444444")
         )
     else:
-        for emotion, reason, date in history:
+        for emotion, reason, note, date in history:
             history_controls.append(
                 ft.Container( 
                     bgcolor= "white",
@@ -63,6 +68,7 @@ def get_history_controls():
                         [
                             ft.Text(f"Feeling: {emotion}", color="black", weight="bold"),
                             ft.Text(f"Reason: {reason}", color="black"),
+                            ft.Text(f"Note: {note}", color="black"),
                             ft.Text(f"Date: {date}", color="#777777", size=12),
                         ]
                     )
@@ -206,16 +212,21 @@ def show_reasons(page, selected_emotion, go_back):
 
     page.add(ft.Text("Why do you feel this way?", size=20, color= "#ff4f87", weight="bold" ))
 
+    note_box = ft.TextField(
+        label="Note about your day", border_color="#ff8fb1"
+    )
+    page.add(note_box)
+
     def save_and_recommend(reason_name):
         conn = sqlite3.connect("moods.db")
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO moods (emotion, reason) VALUES (?, ?)", (selected_emotion, reason_name))
+        cursor.execute("INSERT INTO moods (emotion, reason, note) VALUES (?, ?, ?)", (selected_emotion, reason_name, note_box.value))
         conn.commit()
         conn.close()
 
         song_info = get_song(selected_emotion)
 
-        if len(page.controls) > 3:
+        if len(page.controls) > 4:
             page.controls.pop()
 
         page.add(
