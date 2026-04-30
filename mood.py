@@ -1,6 +1,7 @@
 import flet as ft
 import sqlite3
 import requests
+import random
 
 emotions_bad = [("😢", "Sad"), ("😠", "Angry"), ("😰", "Stressed"),  ("😞", "Overwhelmed"), ("🥱", "Tired") ]
 emotions_Notgood = [("😴", "Unmotivated"), ("😔", "Insecure"), ("😒", "Annoyed"),  ("😅", "Disappointed"), ("🙃", "Bored") ]
@@ -25,12 +26,13 @@ def database():
 
 def get_song(mood):
     try:
-        url = f"https://itunes.apple.com/search?term={mood}&limit=1"
+        url = f"https://itunes.apple.com/search?term={mood}+music&limit=50&entity=song"
         response = requests.get(url, timeout=5)
         data = response.json()
         if data["resultCount"] > 0:
-            song_name = data["results"][0]["trackName"]
-            artist = data["results"][0]["artistName"]
+            random_song = random.choice(data["results"])
+            song_name = random_song["trackName"]
+            artist = random_song["artistName"]
             return f"{song_name} by {artist}"
     except:
         pass
@@ -163,6 +165,9 @@ def show_reasons(page, selected_emotion, go_back):
         conn.close()
 
         song_info = get_song(selected_emotion)
+
+        if len(page.controls) > 3:
+            page.controls.pop()
 
         page.add(
             ft.Container(
