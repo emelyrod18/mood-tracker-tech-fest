@@ -38,8 +38,37 @@ def get_song(mood):
         pass
     return "No song found..."
 
+def get_history_controls():
+    conn = sqlite3.connect("moods.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT emotion, reason, date FROM moods ORDER BY date DESC")
+    history = cursor.fetchall()
+    conn.close()
 
+    history_controls = []
 
+    if len(history) == 0: 
+        history_controls.append(
+            ft.Text("No moods saved yet.", size=16, color="#444444")
+        )
+    else:
+        for emotion, reason, date in history:
+            history_controls.append(
+                ft.Container( 
+                    bgcolor= "white",
+                    padding=15,
+                    border_radius=10,
+                    margin=ft.margin.only(bottom=10),
+                    content=ft.Column(
+                        [
+                            ft.Text(f"Feeling: {emotion}", color="black", weight="bold"),
+                            ft.Text(f"Reason: {reason}", color="black"),
+                            ft.Text(f"Date: {date}", color="#777777", size=12),
+                        ]
+                    )
+                )
+            )
+    return history_controls
 def main(page: ft.Page):
     page.title = "Mood Tracker"
     page.window_width = 400
@@ -82,11 +111,31 @@ def main(page: ft.Page):
             height = 150),
             on_click = lambda e: survey(page, emotions_Great, "Great", show_moods))
 
-        page.add(
-            ft.Column(
-                [ft.Text("Select your mood", size = 30, color="#ff4f87", weight = "bold"), 
-                 ft.Row(controls=[Bad, Notgood, neutral, Good, Great], scroll="auto")],
-                horizontal_alignment="center"))
+        tabs = ft.Tabs(
+            selected_index=0,
+            expand=True,
+            tabs=[
+                ft.Tab(
+                    text="Mood",
+                    content=ft.Column(
+                        [
+                            ft.Text("Select your mood", size=30, color="#ff4f87", weight="bold"),
+                            ft.Row(controls=[Bad, Notgood, neutral, Good, Great], scroll="auto")
+                        ],
+                        horizontal_alignment="center"
+                    )
+                ),
+                ft.Tab(
+                    text="History",
+                    content=ft.Column(
+                    controls=get_history_controls(),
+                    scroll="auto", expand=True
+                    )
+                )
+            ]
+        )
+
+        page.add(tabs)
         page.update()
 
     title = ft.Text(
