@@ -54,8 +54,7 @@ def get_history_controls():
 
     if len(history) == 0: 
         history_controls.append(
-            ft.Text("No moods saved yet.", size=16, color="#444444")
-        )
+            ft.Text("No moods saved yet.", size=16, color="#444444"))
     else:
         for emotion, reason, note, date in history:
             history_controls.append(
@@ -65,16 +64,13 @@ def get_history_controls():
                     border_radius=10,
                     margin=ft.margin.only(bottom=10),
                     content=ft.Column(
-                        [
-                            ft.Text(f"Feeling: {emotion}", color="black", weight="bold"),
+                        [ft.Text(f"Feeling: {emotion}", color="black", weight="bold"),
                             ft.Text(f"Reason: {reason}", color="black"),
                             ft.Text(f"Note: {note}", color="black"),
-                            ft.Text(f"Date: {date}", color="#777777", size=12),
-                        ]
-                    )
-                )
-            )
+                            ft.Text(f"Date: {date}", color="#777777", size=12)])))
+
     return history_controls
+
 def main(page: ft.Page):
     page.title = "Mood Tracker"
     page.window_width = 400
@@ -124,22 +120,14 @@ def main(page: ft.Page):
                 ft.Tab(
                     text="Mood",
                     content=ft.Column(
-                        [
-                            ft.Text("Select your mood", size=30, color="#ff4f87", weight="bold"),
-                            ft.Row(controls=[Bad, Notgood, neutral, Good, Great], scroll="auto")
-                        ],
-                        horizontal_alignment="center"
-                    )
-                ),
+                        [ft.Text("Select your mood", size=30, color="#ff4f87", weight="bold"),
+                            ft.Row(controls=[Bad, Notgood, neutral, Good, Great], scroll="auto")],
+                        horizontal_alignment="center")),
                 ft.Tab(
                     text="History",
                     content=ft.Column(
                     controls=get_history_controls(),
-                    scroll="auto", expand=True
-                    )
-                )
-            ]
-        )
+                    scroll="auto", expand=True))])
 
         page.add(tabs)
         page.update()
@@ -213,8 +201,8 @@ def show_reasons(page, selected_emotion, go_back):
     page.add(ft.Text("Why do you feel this way?", size=20, color= "#ff4f87", weight="bold" ))
 
     note_box = ft.TextField(
-        label="Note about your day", border_color="#ff8fb1"
-    )
+        label="Note about your day", color="#808080", border_color="#A9A9A9", cursor_color= "#808080", 
+        label_style=ft.TextStyle(color="#808080"))
     page.add(note_box)
 
     def save_and_recommend(reason_name):
@@ -230,15 +218,18 @@ def show_reasons(page, selected_emotion, go_back):
             page.controls.pop()
 
         page.add(
-            ft.Container(
+            ft.Row(
+            controls=[ft.Container(
                 bgcolor="white", 
                 padding=20, 
                 border_radius=10, 
                 margin=ft.margin.only(top=20),
                 content=ft.Column([
                     ft.Text(f"Saved: {selected_emotion} because of {reason_name}", color="black"),
-                    ft.Text(f"🎵 Recommended: {song_info}", weight="bold", color="#ff4f87")], 
-                    horizontal_alignment="center")))
+                    ft.Text(f"🎵 Recommended: {song_info}", weight="bold", color="#ff4f87")],
+                    horizontal_alignment="center", tight=True))],
+                    alignment=ft.MainAxisAlignment.CENTER))
+        
         page.update()
     
     rows = []
