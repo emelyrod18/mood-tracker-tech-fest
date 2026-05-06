@@ -133,7 +133,7 @@ def main(page: ft.Page):
         page.update()
 
     title = ft.Text(
-            "Mood Tracker",
+            "Bearable",
             size = 40,
             weight = "bold",
             color = "#ff4f87",
@@ -214,6 +214,21 @@ def show_reasons(page, selected_emotion, go_back):
 
         song_info = get_song(selected_emotion)
 
+        dialog = ft.AlertDialog(
+            title=ft.Text("Mood Saved! 🐻"), content=ft.Text(f"Your mood ({selected_emotion}) has been saved successfully."),
+            actions = [ ft.TextButton("OK", on_click=lambda e: close_dialog())
+                
+            ],
+        )
+
+        def close_dialog():
+            dialog.open = False
+            page.update()
+        
+        page.dialog = dialog
+        dialog.open = True
+        page.update()
+
         if len(page.controls) > 4:
             page.controls.pop()
 
@@ -231,6 +246,11 @@ def show_reasons(page, selected_emotion, go_back):
                     alignment=ft.MainAxisAlignment.CENTER))
         
         page.update()
+        
+        dialog.open = True
+        page.open(dialog)
+        
+        
     
     rows = []
     for emoji, reason_name in reasons:
