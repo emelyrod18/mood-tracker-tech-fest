@@ -156,10 +156,13 @@ def main(page: ft.Page):
     page.add(
         ft.Container(
             content = ft.Column(
-                [title, subtitle, start_button],
+                [ft.Image(
+                    src="images/Bearable.png", width=150, height=150, fit=ft.ImageFit.CONTAIN 
+                ),
+                    title, subtitle, start_button],
                 alignment = ft.MainAxisAlignment.CENTER, 
                 horizontal_alignment = ft.CrossAxisAlignment.CENTER,
-                spacing = 30),
+                spacing = 25),
             alignment = ft.alignment.center,
             expand =  True
         )
