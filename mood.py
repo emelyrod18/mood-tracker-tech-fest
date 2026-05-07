@@ -38,7 +38,8 @@ def get_song(mood):
             random_song = random.choice(data["results"])
             song_name = random_song["trackName"]
             artist = random_song["artistName"]
-            return f"{song_name} by {artist}"
+            link = random_song.get("trackViewUrl", "https://www.apple.com/itunes/")
+            return f"{song_name} by {artist}", link
     except:
         pass
     return "No song found..."
@@ -215,7 +216,7 @@ def show_reasons(page, selected_emotion, go_back):
         conn.commit()
         conn.close()
 
-        song_info = get_song(selected_emotion)
+        song_info, song_url = get_song(selected_emotion)
 
         dialog = ft.AlertDialog(
             title=ft.Text("Mood Saved! 🐻"), content=ft.Text(f"Your mood ({selected_emotion}) has been saved successfully."),
@@ -244,7 +245,8 @@ def show_reasons(page, selected_emotion, go_back):
                 margin=ft.margin.only(top=20),
                 content=ft.Column([
                     ft.Text(f"Saved: {selected_emotion} because of {reason_name}", color="black"),
-                    ft.Text(f"🎵 Recommended: {song_info}", weight="bold", color="#ff4f87")],
+                    ft.Text(f"🎵 Recommended: {song_info}", weight="bold", color="#ff4f87"),
+                    ft.TextButton("Listen on iTunes", url=song_url, style=ft.ButtonStyle(color="ff4f87"))],
                     horizontal_alignment="center", tight=True))],
                     alignment=ft.MainAxisAlignment.CENTER))
         
